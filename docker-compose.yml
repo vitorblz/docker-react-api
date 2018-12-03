@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+
+  nodeapp: #name of your service
+    image: node-server
+    build: ./node-server # specify the directory of the Dockerfile
+    container_name: node-api
+    restart: always
+    ports:
+      - "3000:3000" #specify ports forwarding
+    volumes:
+      - ./node-server/:/usr/src/node-server
+    depends_on:
+      - mongodb2
+
+  frontend: #name of your service
+    image: frontend-react
+    build: ./frontend # specify the directory of the Dockerfile
+    container_name: frontend-react
+    restart: always
+    ports:
+      - "3001:3000" #specify ports forwarding
+    volumes:
+      - ./frontend/:/usr/src/app
+    depends_on:
+      - nodeapp
+
+  mongodb2:
+    image: mongo
+    container_name: mongodb2
+    restart: always
+    volumes:
+      - ./database/:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB_NAME}
