@@ -8,8 +8,11 @@ WORKDIR /usr/src/app
 # add `/usr/src/app/node_modules/.bin` to $PATH
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
+COPY package*.json ./
+RUN npm install
+
 # install and cache app dependencies
-COPY . /usr/src/app/
+COPY . .
 RUN npm install react-scripts@1.1.1 -g --silent
 
 EXPOSE 3000
